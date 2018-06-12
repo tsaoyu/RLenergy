@@ -4,8 +4,11 @@ from gym.core import Space
 class ContinuousSpace(Space):
 
     def __init__(self, low, high):
-        self.low = low
-        self.high = high
+        if low < high:
+            self.low = low
+            self.high = high
+        else:
+            raise ValueError('The lower bounds is not smaller than the higher bound.')
 
     def sample(self):
         return np.random.uniform(low=self.low, high=self.high)
