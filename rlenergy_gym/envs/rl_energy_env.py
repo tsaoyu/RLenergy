@@ -1,7 +1,13 @@
 import gym
+
+import numpy as np
+
+
 from gym.spaces.box import Box
 from gym.spaces.discrete import Discrete
-import numpy as np
+from sklearn import preprocessing
+
+from rlenergy_gym.utility import space
 
 from D3HRE.management import Dynamic_environment
 
@@ -10,9 +16,9 @@ class EnergyEnv(gym.Env):
 
     def __init__(self, battery, resource, result_df):
         self.env = Dynamic_environment(battery, resource, None)
+        self.resource = resource
         self.env.set_demand(result_df)
         self.def_space()
-
 
     def step(self, action):
         """
@@ -44,15 +50,18 @@ class EnergyEnv(gym.Env):
                  use this for learning.
         """
         ob, reward, done, info = self.env.gym_step(action)
-        ob = np.array(ob['usable_capacity'])
+        if isinstance(reward, np.ndarray):
+            reward = reward[0][0]
         return ob, reward, done, info
 
     def reset(self):
-        self.env.reset()
+        init_state = self.env.reset()
+        # Also return initial state
+        return init_state
 
     def render(self, mode='human', close=False):
         pass
 
     def def_space(self):
-        self.action_space = Discrete(20)
-        self.observation_space = Box(low=1,high=1000,shape=(1, ))
+        self.action_space = Box(-1., 1, shape=(1,))
+        self.observation_space = Box(-1, 1, shape=(3,))
