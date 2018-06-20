@@ -60,7 +60,7 @@ class EnergyEnv(gym.Env):
         return init_state
 
     def render(self, mode='human', close=False):
-        pass
+        return self.env.simulation_result()
 
     def def_space(self):
         self.action_space = Box(-1., 1, shape=(1,))
