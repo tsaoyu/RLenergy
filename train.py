@@ -14,7 +14,7 @@ with open('prepared_env.pkl', 'rb') as f:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train the neural network.')
-    parser.add_argument('--epochs', default=10000, help='training epochs')
+    parser.add_argument('--epochs', default=10000, type=int, help='training epochs')
     parser.add_argument('--model', default='ddpg', help='RL model')
     parser.add_argument('--net_model', default='nn33', help='name of the neural network')
     parser.add_argument('--hidden_dim', default=128, help='hidden dimensions in neural network')
