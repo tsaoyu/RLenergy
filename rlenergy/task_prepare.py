@@ -73,7 +73,7 @@ config = {'load': {'prop_load': {'prop_eff': 0.7,
    'v_rate': 15}}}
 
 route_index = 3
-START_DATE = '2014-01-01'
+START_DATE = '2013-01-01'
 SPEED = 3
 
 all_routes = read_route_from_gpx('/home/tony/D3HRE_notebooks/Example data/routes.gpx')

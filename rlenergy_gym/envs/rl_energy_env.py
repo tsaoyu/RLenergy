@@ -65,3 +65,6 @@ class EnergyEnv(gym.Env):
     def def_space(self):
         self.action_space = Box(-1., 1, shape=(1,))
         self.observation_space = Box(-1, 1, shape=(3,))
+
+    def scaler(self):
+        return self.env.get_scaler()

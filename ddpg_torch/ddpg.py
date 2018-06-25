@@ -54,7 +54,7 @@ class NormalizedActions(gym.ActionWrapper):
         action = 2 * (action - low_bound) / (upper_bound - low_bound) - 1
         action = np.clip(action, low_bound, upper_bound)
 
-        return actions
+        return action
 
 
 class OUNoise(object):
@@ -221,8 +221,9 @@ value_criterion = nn.MSELoss()
 replay_buffer_size = 1000
 replay_buffer = ReplayBuffer(replay_buffer_size)
 
-max_frames  = 2000000
+
 max_steps   = len(resource)
+max_frames  = max_steps * 3
 frame_idx   = 0
 rewards     = []
 batch_size  = 128
@@ -235,7 +236,9 @@ while frame_idx < max_frames:
 
     for step in range(max_steps):
         action = policy_net.get_action(state)
-        action = ou_noise.get_action(action, step)
+        action_with_noise = ou_noise.get_action(action, step)
+        diff = action_with_noise - action
+        action = action_with_noise
         next_state, reward, done, _ = env.step(action)
 
         replay_buffer.push(state, action, reward, next_state, done)
@@ -253,3 +256,5 @@ while frame_idx < max_frames:
             break
 
     rewards.append(episode_reward)
+
+print(env.render())
