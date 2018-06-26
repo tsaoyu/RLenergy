@@ -5,6 +5,8 @@ import torch.nn as nn
 import torch.optim as optim
 from mlflow import log_metric, log_param, log_artifact
 
+from tensorboardX import SummaryWriter
+
 import numpy as np
 from rlenergy_gym.envs import rl_energy_env
 
@@ -18,13 +20,11 @@ if __name__ == '__main__':
     parser.add_argument('--model', default='ddpg', help='RL model')
     parser.add_argument('--net_model', default='nn33', help='name of the neural network')
     parser.add_argument('--hidden_dim', default=128, help='hidden dimensions in neural network')
-    parser.add_argument('--value_lr', default=1e-3, help='Value network learning rate')
-    parser.add_argument('--policy_lr', default=1e-4, help='Policy network learning rate')
+    parser.add_argument('--value_lr', default=1e-2, help='Value network learning rate')
+    parser.add_argument('--policy_lr', default=1e-2, help='Policy network learning rate')
+    parser.add_argument('--gamma', default=0.95, help='discount factor')
 
     args = parser.parse_args()
-
-
-
 
     battery, result_df, resource = env_pack
     battery_copy = battery.copy()
@@ -38,6 +38,8 @@ if __name__ == '__main__':
 
     env = rl_energy_env.EnergyEnv(battery_copy, resource, result_df)
 
+    writer = SummaryWriter()
+
     ou_noise = OUNoise(env.action_space)
 
     state_dim = env.observation_space.shape[0]
@@ -49,7 +51,7 @@ if __name__ == '__main__':
 
 
     def ddpg_update(batch_size,
-                    gamma=0.99,
+                    gamma=args.gamma,
                     min_value=-np.inf,
                     max_value=np.inf,
                     soft_tau=1e-2):
@@ -105,19 +107,21 @@ if __name__ == '__main__':
     value_lr = args.value_lr
     policy_lr = args.policy_lr
 
-    value_optimizer = optim.Adam(value_net.parameters(), lr=value_lr)
-    policy_optimizer = optim.Adam(policy_net.parameters(), lr=policy_lr)
+
+    value_optimizer = optim.SGD(value_net.parameters(), lr=value_lr)
+    policy_optimizer = optim.SGD(policy_net.parameters(), lr=policy_lr)
 
     value_criterion = nn.MSELoss()
 
-    replay_buffer_size = 1000
+    replay_buffer_size = 100000
     replay_buffer = ReplayBuffer(replay_buffer_size)
 
     max_steps = len(resource)
-    max_frames = max_steps * args.epochs
+    max_frames = max_steps * int(args.epochs)
+    print('Max frame is', max_frames)
     frame_idx = 0
     rewards = []
-    batch_size = 128
+    batch_size = 256
 
     while frame_idx < max_frames:
         state = env.reset()
@@ -140,7 +144,7 @@ if __name__ == '__main__':
             frame_idx += 1
 
             if frame_idx % max(1000, max_steps + 1) == 0:
-                print('Reward:', rewards[-1])
+                writer.add_scalar('reward', rewards[-1], frame_idx)
 
             if done:
                 break
