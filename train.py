@@ -22,7 +22,7 @@ if __name__ == '__main__':
     parser.add_argument('--hidden_dim', default=128, help='hidden dimensions in neural network')
     parser.add_argument('--value_lr', default=1e-2, help='Value network learning rate')
     parser.add_argument('--policy_lr', default=1e-2, help='Policy network learning rate')
-    parser.add_argument('--gamma', default=0.95, help='discount factor')
+    parser.add_argument('--gamma', default=0.95, type=float, help='discount factor')
 
     args = parser.parse_args()
 
