@@ -34,6 +34,9 @@ if __name__ == '__main__':
         if args.net_model == 'nn33':
             from models.ddpg import ValueNetwork3LinearLayer as ValueNetwork
             from models.ddpg import PolicyNetwork3LinearLayer as PolicyNetwork
+        elif args.net_model == 'nn44':
+            from models.ddpg import ValueNetwork4LinearLayer as ValueNetwork
+            from models.ddpg import PolicyNetwork4LinearLayer as PolicyNetwork
 
 
     env = rl_energy_env.EnergyEnv(battery_copy, resource, result_df)
