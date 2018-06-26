@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     env = rl_energy_env.EnergyEnv(battery_copy, resource, result_df)
 
-    writer = SummaryWriter()
+    writer = SummaryWriter('run2')
 
     ou_noise = OUNoise(env.action_space)
 
