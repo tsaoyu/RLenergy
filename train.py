@@ -111,8 +111,8 @@ if __name__ == '__main__':
     policy_lr = args.policy_lr
 
 
-    value_optimizer = optim.SGD(value_net.parameters(), lr=value_lr)
-    policy_optimizer = optim.SGD(policy_net.parameters(), lr=policy_lr)
+    value_optimizer = optim.SGD(value_net.parameters(), lr=value_lr, momentum=0.9)
+    policy_optimizer = optim.SGD(policy_net.parameters(), lr=policy_lr, momentum=0.9)
 
     value_criterion = nn.MSELoss()
 
