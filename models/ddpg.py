@@ -136,16 +136,51 @@ class PolicyNetwork3LinearLayer(nn.Module):
         action = self.forward(state)
         return action.detach().cpu().numpy()[0, 0]
 
-class DdpgUpdate():
-    def __init__(self,
-                batch_size,
-                replay_buffer,
-                policy_net,
 
-                gamma=0.99,
-                min_value=-np.inf,
-                max_value=np.inf,
-                soft_tau=1e-2):
-        pass
+class ValueNetwork4LinearLayer(nn.Module):
+    def __init__(self, num_inputs, num_actions, hidden_size, init_w=1e-3):
+        super(ValueNetwork4LinearLayer, self).__init__()
+
+        self.linear1 = nn.Linear(num_inputs + num_actions, hidden_size)
+        self.linear2 = nn.Linear(hidden_size, hidden_size)
+        self.linear3 = nn.Linear(hidden_size, hidden_size)
+        self.linear4 = nn.Linear(hidden_size, 1)
+
+        self.linear4.weight.data.uniform_(-init_w, init_w)
+        self.linear4.bias.data.uniform_(-init_w, init_w)
+
+    def forward(self, state, action):
+        x = torch.cat([state, action], 1)
+        x = F.relu(self.linear1(x))
+        x = F.relu(self.linear2(x))
+        x = F.relu(self.linear3(x))
+        x = self.linear4(x)
+        return x
+
+
+class PolicyNetwork4LinearLayer(nn.Module):
+    def __init__(self, num_inputs, num_actions, hidden_size, init_w=1e-3):
+        super(PolicyNetwork4LinearLayer, self).__init__()
+
+        self.linear1 = nn.Linear(num_inputs, hidden_size)
+        self.linear2 = nn.Linear(hidden_size, hidden_size)
+        self.linear3 = nn.Linear(hidden_size, hidden_size)
+        self.linear4 = nn.Linear(hidden_size, num_actions)
+
+        self.linear4.weight.data.uniform_(-init_w, init_w)
+        self.linear4.bias.data.uniform_(-init_w, init_w)
+
+    def forward(self, state):
+        x = F.relu(self.linear1(state))
+        x = F.relu(self.linear2(x))
+        x = F.relu(self.linear3(x))
+        x = F.tanh(self.linear4(x))
+        return x
+
+    def get_action(self, state):
+        state = torch.FloatTensor(state).unsqueeze(0).to(device)
+        action = self.forward(state)
+        return action.detach().cpu().numpy()[0, 0]
+
 
 
