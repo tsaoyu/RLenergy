@@ -19,9 +19,9 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', default=10000, type=int, help='training epochs')
     parser.add_argument('--model', default='ddpg', help='RL model')
     parser.add_argument('--net_model', default='nn33', help='name of the neural network')
-    parser.add_argument('--hidden_dim', default=128, help='hidden dimensions in neural network')
-    parser.add_argument('--value_lr', default=1e-2, help='Value network learning rate')
-    parser.add_argument('--policy_lr', default=1e-2, help='Policy network learning rate')
+    parser.add_argument('--hidden_dim', default=128, type=int, help='hidden dimensions in neural network')
+    parser.add_argument('--value_lr', default=1e-2, type=float,help='Value network learning rate')
+    parser.add_argument('--policy_lr', default=1e-2, type=float,help='Policy network learning rate')
     parser.add_argument('--gamma', default=0.95, type=float, help='discount factor')
 
     args = parser.parse_args()
