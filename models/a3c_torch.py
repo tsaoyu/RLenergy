@@ -9,6 +9,7 @@ import gym
 import math, os
 os.environ["OMP_NUM_THREADS"] = "1"
 
+from tensorboardX import SummaryWriter
 import cloudpickle
 from rlenergy_gym.envs import rl_energy_env
 
@@ -142,13 +143,22 @@ if __name__ == "__main__":
     opt = SharedAdam(gnet.parameters(), lr=0.0002)  # global optimizer
     global_ep, global_ep_r, res_queue = mp.Value('i', 0), mp.Value('d', 0.), mp.Queue()
 
+
     # parallel training
     workers = [Worker(gnet, opt, global_ep, global_ep_r, res_queue, i) for i in range(mp.cpu_count())]
     [w.start() for w in workers]
+
+    import datetime
+    import socket
+    current_time = datetime.now().strftime('%b%d_%H-%M-%S')
+    log_dir = 'runs/' + 'run4' + '/' + current_time + '_' + socket.gethostname()
+    writer = SummaryWriter(log_dir)
+
     res = []                    # record episode reward to plot
     while True:
         r = res_queue.get()
         if r is not None:
+            writer.add_scalar('reward', r, global_ep.value)
             res.append(r)
         else:
             break
