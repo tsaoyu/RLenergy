@@ -1,5 +1,8 @@
 import cloudpickle
 import argparse
+import os
+import socket
+from datetime import datetime
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -23,6 +26,7 @@ if __name__ == '__main__':
     parser.add_argument('--value_lr', default=1e-2, type=float,help='Value network learning rate')
     parser.add_argument('--policy_lr', default=1e-2, type=float,help='Policy network learning rate')
     parser.add_argument('--gamma', default=0.95, type=float, help='discount factor')
+    parser.add_argument('--experiment', default='run1', help='experiment ID')
 
     args = parser.parse_args()
 
@@ -41,7 +45,9 @@ if __name__ == '__main__':
 
     env = rl_energy_env.EnergyEnv(battery_copy, resource, result_df)
 
-    writer = SummaryWriter('run2')
+    current_time = datetime.now().strftime('%b%d_%H-%M-%S')
+    log_dir = 'runs/'+ args.experiment + '/'  + current_time + '_' + socket.gethostname()
+    writer = SummaryWriter(log_dir)
 
     ou_noise = OUNoise(env.action_space)
 
