@@ -46,7 +46,11 @@ if __name__ == '__main__':
     env = rl_energy_env.EnergyEnv(battery_copy, resource, result_df)
 
     current_time = datetime.now().strftime('%b%d_%H-%M-%S')
+<<<<<<< HEAD
     log_dir = 'runs/'+ args.experiment + '/'  + current_time + '_' + socket.gethostname() 
+=======
+    log_dir = 'runs/'+ args.experiment + '/'  + current_time + '_' + socket.gethostname()
+>>>>>>> 09ab55f1738111c68a883ef155b30a19c3eacfa6
     writer = SummaryWriter(log_dir)
 
     ou_noise = OUNoise(env.action_space)
