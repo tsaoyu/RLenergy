@@ -25,7 +25,7 @@ N_S = env.observation_space.shape[0]
 N_A = env.action_space.shape[0]
 
 UPDATE_GLOBAL_ITER = 5
-GAMMA = 0.9
+GAMMA = 0.99
 MAX_EP = 3000
 MAX_EP_STEP = 300
 
