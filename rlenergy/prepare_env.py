@@ -8,7 +8,7 @@ import numpy as np
 import cloudpickle
 
 ship = propulsion_power.Ship()
-ship.dimension(5.72, 0.248, 0.76, 1.2, 5.72/(0.549)**(1/3), 0.613)
+ship.dimension(2.8, 0.25, 0.8, 1.2, 2.8 / (0.47) ** (1 / 3), 0.613)
 
 power_consumption_list = {'single_board_computer': {'power': [2, 10], 'duty_cycle': 0.5},
                               'webcam': {'power': [0.6], 'duty_cycle': 1},
